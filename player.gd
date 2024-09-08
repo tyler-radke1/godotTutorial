@@ -6,15 +6,12 @@ signal hit
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#hide()
+	hide()
 	screen_size = get_viewport_rect().size
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	checkMovement(delta)
-
-func checkMovement(delta: float):
 	var velocity = Vector2.ZERO
 	if Input.is_action_pressed("move_left"):
 		velocity.x -= 1
@@ -27,28 +24,28 @@ func checkMovement(delta: float):
 		
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
-		$AnimatedSprite2D.play()
+		$PlayerAnimatedSprite2D.play()
 	else:
-		$AnimatedSprite2D.stop()
+		$PlayerAnimatedSprite2D.stop()
 		
 	position += velocity * delta
-	position = position.clamp(Vector2.ZERO, screen_size)
 	
+	position = position.clamp(Vector2.ZERO, screen_size)
 	if velocity.x != 0:
-		$AnimatedSprite2D.animation = "walk"
-		$AnimatedSprite2D.flip_v = false
-		$AnimatedSprite2D.flip_h = velocity.x < 0
+		$PlayerAnimatedSprite2D.animation = "walk"
+		$PlayerAnimatedSprite2D.flip_v = false
+		$PlayerAnimatedSprite2D.flip_h = velocity.x < 0
 	elif velocity.y != 0:
-		$AnimatedSprite2D.animation = "up"
-		$AnimatedSprite2D.flip_v = velocity.y > 0
+		$PlayerAnimatedSprite2D.animation = "up"
+		$PlayerAnimatedSprite2D.flip_v = velocity.y > 0
 
 
 func _on_body_entered(body: Node2D) -> void:
 	hide()
 	hit.emit()
-	$CollisionShape2D.set_deferred("disabled", true)
+	$PlayerCollisionShape2D.set_deferred("disabled", true)
 
 func start(pos):
 	position = pos
 	show()
-	$CollisionShape2D.disabled = false
+	$PlayerCollisionShape2D.disabled = false
